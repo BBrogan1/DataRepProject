@@ -8,11 +8,13 @@ export class Create extends React.Component {
 
         this.onSubmit = this.onSubmit.bind(this);
         this.onChangeTitle = this.onChangeTitle.bind(this);
+        this.onChangeAuthor = this.onChangeAuthor.bind(this);
         this.onChangeYear = this.onChangeYear.bind(this);
         this.onChangePoster = this.onChangePoster.bind(this);
 
         this.state = {
             Title: '',
+            Author: '',
             Year: '',
             Poster: ''
         }
@@ -21,6 +23,12 @@ export class Create extends React.Component {
     onChangeTitle(e) {
         this.setState({
             Title: e.target.value
+        });
+    }
+
+    onChangeAuthor(e) {
+        this.setState({
+            Author: e.target.value
         });
     }
 
@@ -37,17 +45,19 @@ export class Create extends React.Component {
 
     onSubmit(e) {
         e.preventDefault();
-        alert("Movie: " + this.state.Title + " "
+        alert("Book: " + this.state.Title + " "
+            + this.state.Author + " "
             + this.state.Year + " " +
             this.state.Poster);
 
-            const newMovie ={
+            const newBook ={
                 Title:this.state.Title,
+                Author:this.state.Author,
                 Year:this.state.Year,
                 Poster:this.state.Poster
             };
 
-        axios.post('http://localhost:4000/api/movies', newMovie)
+        axios.post('http://localhost:4000/api/books', newBook)
         .then(response => console.log(response.data))
         .catch(error => console.log(error));    
 
@@ -58,21 +68,28 @@ export class Create extends React.Component {
             <div className='App'>
                 <form onSubmit={this.onSubmit}>
                     <div className="form-group">
-                        <label>Add Movie Title: </label>
+                        <label>Add Book Title: </label>
                         <input type='text'
                             className='form-control'
                             value={this.state.Title}
                             onChange={this.onChangeTitle}></input>
                     </div>
                     <div className="form-group">
-                        <label>Add Movie Year: </label>
+                        <label>Add Book Author: </label>
+                        <input type='text'
+                            className='form-control'
+                            value={this.state.Author}
+                            onChange={this.onChangeAuthor}></input>
+                    </div>
+                    <div className="form-group">
+                        <label>Add Book Year: </label>
                         <input type='text'
                             className='form-control'
                             value={this.state.Year}
                             onChange={this.onChangeYear}></input>
                     </div>
                     <div className='form-group'>
-                        <label>Movies Poster: </label>
+                        <label>Books Poster: </label>
                         <textarea type='text'
                             className='form-control'
                             value={this.state.Poster}
@@ -83,7 +100,7 @@ export class Create extends React.Component {
 
                     <div className="form-group">
                         <input type='submit'
-                            value='Add Movie'
+                            value='Add Book'
                             className='btn btn-primary'></input>
                     </div>
                 </form>

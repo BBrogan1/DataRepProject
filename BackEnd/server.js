@@ -21,48 +21,50 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
 
-const strConnection = 'mongodb+srv://benb:brogie26@cluster0.jz0gj.mongodb.net/MyFilms?retryWrites=true&w=majority';
+const strConnection = 'mongodb+srv://benb:brogie26@cluster0.jz0gj.mongodb.net/BookClub?retryWrites=true&w=majority';
 mongoose.connect(strConnection,{useNewUrlParser: true});
 
 //creating object for schema
 const Schema = mongoose.Schema;
-const movieSchema = new Schema({
+const bookSchema = new Schema({
     Title:String,
+    Author:String,
     Year:String,
-    Poster:String
+    Cover:String
 })
-//all created movies go to this model
-const movieModel = mongoose.model('film', movieSchema);
+//all created books go to this model
+const bookModel = mongoose.model('Novel', bookSchema);
 
 app.get('/', (req, res) => {
     res.send('Hello World!')
 })
 
-app.get('/api/movies', (req, res) => {
+app.get('/api/books', (req, res) => {
 
-    movieModel.find((err,data)=>{
+    bookModel.find((err,data)=>{
         res.json(data);
     })
-         //   "Poster": "https://m.media-amazon.com/images/M/MV5BMjMxNjY2MDU1OV5BMl5BanBnXkFtZTgwNzY1MTUwNTM@._V1_SX300.jpg"
-         //   "Poster": "https://m.media-amazon.com/images/M/MV5BMjQ0MTgyNjAxMV5BMl5BanBnXkFtZTgwNjUzMDkyODE@._V1_SX300.jpg"
-           // "Poster": "https://m.media-amazon.com/images/M/MV5BNDQ4YzFmNzktMmM5ZC00MDZjLTk1OTktNDE2ODE4YjM2MjJjXkEyXkFqcGdeQXVyNTA4NzY1MzY@._V1_SX300.jpg"
-           // "Poster": "https://m.media-amazon.com/images/M/MV5BNDUyODAzNDI1Nl5BMl5BanBnXkFtZTcwMDA2NDAzMw@@._V1_SX300.jpg"
+         //   "Cover": "https://m.media-amazon.com/images/M/MV5BMjMxNjY2MDU1OV5BMl5BanBnXkFtZTgwNzY1MTUwNTM@._V1_SX300.jpg"
+         //   "Cover": "https://m.media-amazon.com/images/M/MV5BMjQ0MTgyNjAxMV5BMl5BanBnXkFtZTgwNjUzMDkyODE@._V1_SX300.jpg"
+           // "Cover": "https://m.media-amazon.com/images/M/MV5BNDQ4YzFmNzktMmM5ZC00MDZjLTk1OTktNDE2ODE4YjM2MjJjXkEyXkFqcGdeQXVyNTA4NzY1MzY@._V1_SX300.jpg"
+           // "Cover": "https://m.media-amazon.com/images/M/MV5BNDUyODAzNDI1Nl5BMl5BanBnXkFtZTcwMDA2NDAzMw@@._V1_SX300.jpg"
     })
-app.get('/api/movies/:id',(req, res)=>{
+app.get('/api/books/:id',(req, res)=>{
     console.log(req.params.id);
-    movieModel.findById(req.params.id, (err,data)=>{ //reads a movie by id from my database in my node server        
+    bookModel.findById(req.params.id, (err,data)=>{ //reads a book by id from my database in my node server        
         res.json(data);
     })
 })
 
 //write data to my mongodb
-app.post('/api/movies', (req, res) => {
+app.post('/api/books', (req, res) => {
     console.log(req.body);
 
-    movieModel.create({
+    bookModel.create({
         Title:req.body.Title,
+        Author:req.body.Author,
         Year:req.body.Year,
-        Poster:req.body.Poster
+        Cover:req.body.Cover
     })
     .then()
     .catch();
