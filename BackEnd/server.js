@@ -4,7 +4,7 @@ const port = 4000
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-
+const path = require('path');
 
 app.use(cors());
 app.use(function (req, res, next) {
@@ -14,6 +14,10 @@ app.use(function (req, res, next) {
         "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
+
+app.use(express.static(path.join(__dirname, '../build'))); //where it will find the build folder
+app.use('/static', express.static(path.join(__dirname, 'build/static'))); //where it finds the static folder
+
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -44,15 +48,30 @@ app.get('/api/books', (req, res) => {
     bookModel.find((err,data)=>{
         res.json(data);
     })
-         //   "Cover": "https://m.media-amazon.com/images/M/MV5BMjMxNjY2MDU1OV5BMl5BanBnXkFtZTgwNzY1MTUwNTM@._V1_SX300.jpg"
-         //   "Cover": "https://m.media-amazon.com/images/M/MV5BMjQ0MTgyNjAxMV5BMl5BanBnXkFtZTgwNjUzMDkyODE@._V1_SX300.jpg"
-           // "Cover": "https://m.media-amazon.com/images/M/MV5BNDQ4YzFmNzktMmM5ZC00MDZjLTk1OTktNDE2ODE4YjM2MjJjXkEyXkFqcGdeQXVyNTA4NzY1MzY@._V1_SX300.jpg"
-           // "Cover": "https://m.media-amazon.com/images/M/MV5BNDUyODAzNDI1Nl5BMl5BanBnXkFtZTcwMDA2NDAzMw@@._V1_SX300.jpg"
+         
     })
 app.get('/api/books/:id',(req, res)=>{
     console.log(req.params.id);
     bookModel.findById(req.params.id, (err,data)=>{ //reads a book by id from my database in my node server        
         res.json(data);
+    })
+})
+
+app.put('/api/books/:id',(req,res)=>{
+    console.log("Update Book: "+req.params.id);
+    console.log(req.body);
+        bookModel.findByIdAndUpdate(req.params.id,
+         req.body, {new:true},
+         (err,data)=>{
+             res.send(data);
+     })
+})
+
+app.delete('/api/books/:id',(req, res)=>{
+    console.log("Delete Book: "+req.params.id);
+
+    bookModel.findByIdAndDelete(req.params.id,(err, data)=>{
+        res.send(data);
     })
 })
 
@@ -71,6 +90,9 @@ app.post('/api/books', (req, res) => {
     res.send('Data Recieved!');
 })
 
+app.get('*', (req, res)=>{
+    res.sendFile(path.join(__dirname+'/../build/index.html'));
+})
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
 })

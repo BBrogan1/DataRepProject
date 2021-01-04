@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 
-export class Create extends React.Component {
+export class Edit extends React.Component {
 
     constructor() {
         super();
@@ -20,7 +20,26 @@ export class Create extends React.Component {
         }
     }
 
-    //creating the different headers for submission
+    //same as create.js but editing the existing book
+    componentDidMount(){
+        console.log("load "+this.props.match.params.id);
+
+        axios.get('http://localhost:4000/api/books/'+this.props.match.params.id)
+        .then((response)=>{
+            this.setState({
+                Title:response.data.Title,
+                Author:response.data.Author,
+                Year:response.data.Year,
+                Cover:response.data.Cover,
+                _id:response.data._id
+            })
+        })
+        .catch((err)=>{
+            console.log(err);
+        });
+    }
+
+
     onChangeTitle(e) {
         this.setState({
             Title: e.target.value
@@ -55,12 +74,16 @@ export class Create extends React.Component {
                 Title:this.state.Title,
                 Author:this.state.Author,
                 Year:this.state.Year,
-                Cover:this.state.Cover
+                Cover:this.state.Cover,
+                _id:this.state._id
             };
 
-        axios.post('http://localhost:4000/api/books', newBook)
-        .then(response => console.log(response.data))
-        .catch(error => console.log(error));    
+            axios.put('http://localhost:4000/api/books/'+this.state._id,newBook)
+            .then(response => console.log(response.data))
+            .catch(error => console.log(error));
+
+
+  
 
     }
 
@@ -101,8 +124,8 @@ export class Create extends React.Component {
 
                     <div className="form-group">
                         <input type='submit'
-                            value='Add Book'
-                            className='btn btn-primary'></input>
+                            value='Edit Book'
+                            className='btn btn-info'></input>
                     </div>
                 </form>
             </div>
